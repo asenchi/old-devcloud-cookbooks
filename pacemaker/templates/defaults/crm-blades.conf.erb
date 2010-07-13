@@ -1,0 +1,20 @@
+<% (1..16).each do |b| %>
+# BLADE<%= b %>
+primitive pod1san-blade<%= b %>-drbd ocf:linbit:drbd \
+	params drbd_resource="blade.<%= b %>" \
+	op monitor interval="7s" role="Slave" timeout="20s" \
+	op monitor interval="5s" role="Master" timeout="20s"
+ms pod1san-blade<%= b %>-ms pod1san-blade<%= b %>-drbd \
+	meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true"
+primitive pod1san-blade<%= b %>-target ocf:heartbeat:iSCSITarget \
+	params implementation="iet" iqn="iqn.2010-07.com.engineyard.devcloud:storage<%= b %>"
+primitive pod1san-blade<%= b %>-lun ocf:heartbeat:iSCSILogicalUnit \
+	params \
+	implementation="iet" lun="0" \
+	target_iqn="iqn.2010-07.com.engineyard.devcloud:storage<%= b %>" path="/dev/drbd<%= b %>"
+location pod1san-blade<%= b %>-pingmaster pod1san-blade<%= b %>-ms rule pingd: defined pingd
+group pod1san-blade<%= b %>-grp pod1san-blade0<%= b %>-ip pod1san-blade0<%= b %>-target pod1san-blade0<%= b %>-lun
+colocation pod1san-blade<%= b %>-grp-with-master inf: pod1san-blade<%= b %>-grp pod1san-blade<%= b %>-ms:Master
+order pod1san-blade<%= b %>-iscsi-before-drbd-promote inf: iscsi_init:start pod1san-blade<%= b %>-ms:promote
+order pod1san-blade<%= b %>-drbd-promote-before-grp inf: pod1san-blade<%= b %>-ms:promote pod1san-blade<%= b %>-grp:start
+<% end %>

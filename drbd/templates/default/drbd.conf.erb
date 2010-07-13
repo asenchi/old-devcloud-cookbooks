@@ -1,0 +1,27 @@
+global { usage-count no; }
+common {
+        protocol C;
+        disk { fencing resource-only; }
+        syncer { rate 10M; }
+        handlers {
+                fence-peer "/usr/lib/drbd/crm-fence-peer.sh";
+                after-resync-target "/usr/lib/drbd/crm-unfence-peer.sh";
+        }
+}
+
+<% (1..16).each do |b| %>
+resource blade.<%= b %> {
+        on <%= @node['san1hostname'] %> {
+                device /dev/drbd<%= b %>;
+                disk /dev/blades/blade<%= b %>;
+                address 10.10.1.11:77<%= b + 80 %>;
+                meta-disk /dev/blades/drbdmeta[<%= b %>];
+        }
+        on <%= @node['san2hostname'] %> {
+                device /dev/drbd<%= b %>;
+                disk /dev/blades/blade0<%= b %>;
+                address 10.10.1.12:77<%= b + 80 %>;
+                meta-disk /dev/blades/drbdmeta[<%= b %>];
+        }
+}
+<% end %>

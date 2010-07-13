@@ -1,0 +1,24 @@
+# ALL TIMEOUT VALUES NEED TO BE RE-EVALUATED
+
+# We use 1 IP per iscsi target. This allows us to focus our disks to each
+# blade server rather than having to edit out 16 iscsitargets and LUN's.
+
+# Set resource stickiness to freeze resources to nodes.
+rsc_defaults resource-stickiness=100
+
+# Start the iscsitarget daemon
+primitive iscsi_lsb lsb:iscsitarget \
+	op monitor interval="15s" timeout="15s"
+clone iscsi_init iscsi_lsb \
+	meta clone-max="2" clone-node-max="1" globally-unique="false"
+
+# Setup pingd to ping the gateways to test for fastest network connection.
+primitive ping_gw ocf:pacemaker:ping \
+	params name="pingd" host_list="<%= @node[:gateway] %>" multiplier="1000" attempts="3" \
+	op start timeout="60s" \
+	op monitor interval="10s" timeout="20s"
+	
+# Setup our shared IP address.
+primitive pod1san-blade01-ip ocf:heartbeat:IPaddr2 \
+	params ip="<%= @node[:virtual_ip] %>" cidr_netmask="32" \
+	op monitor interval="5s"
