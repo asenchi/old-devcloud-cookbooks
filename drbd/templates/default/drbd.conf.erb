@@ -2,11 +2,17 @@ global { usage-count no; }
 common {
         protocol C;
         disk { fencing resource-only; }
-        syncer { rate 10M; }
+        syncer {
+			al-extents 3389;
+			rate 10M;
+		}
         handlers {
                 fence-peer "/usr/lib/drbd/crm-fence-peer.sh";
                 after-resync-target "/usr/lib/drbd/crm-unfence-peer.sh";
         }
+		net {
+			sndbuf-size 0;
+		}
 }
 
 <% (1..16).each do |b| %>
