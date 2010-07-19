@@ -1,8 +1,0 @@
-<% (1..16).each do |s| %>
-Target iqn.2010-07.com.engineyard.devcloud:storage<%= s %>
-	# Password is required to be 12 characters long
-	IncomingUser <%= @node[:incoming_username] %><%= @node[:incoming_password] %>
-	OutgoingUser <%= @node[:outgoing_username] %><%= @node[:outgoing_password] %>
-	Lun 0 Path=/dev/drbd<%= s %>,Type=fileio
-	Alias blade<%= s %>
-<% end %>
