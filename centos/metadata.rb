@@ -1,0 +1,7 @@
+maintainer        "Engine Yard"
+maintainer_email  "cmicol@engineyard.com"
+license           "Apache 2.0"
+description       "Sets up sources for centos"
+version           "0.0.1"
+supports          "centos"
+recipe            "centos", "Sets up sources for the node's centos release"

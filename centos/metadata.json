@@ -1,0 +1,36 @@
+{
+    "recommendations": {
+    },
+    "attributes": {
+    },
+    "maintainer": "Engine Yard",
+    "suggestions": {
+    },
+    "dependencies": {
+      "yum": [
+
+      ]
+    },
+    "maintainer_email": "cmicol@engineyard.com",
+    "conflicting": {
+    },
+    "platforms": {
+      "centos": [
+
+      ]
+    },
+    "license": "Apache 2.0",
+    "version": "0.0.1",
+    "providing": {
+    },
+    "recipes": {
+      "centos": "Sets up sources for the node's centos release"
+    },
+    "replacing": {
+    },
+    "name": "centos",
+    "description": "Sets up sources for centos",
+    "groupings": {
+    },
+    "long_description": ""
+  }
